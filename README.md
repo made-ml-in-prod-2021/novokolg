@@ -1,6 +1,5 @@
 # novokolg
-# novokolg
 
-Репозиторий для курса "Машинное обучение в продакшене".
-Ссылка на профиль в MADE: https://data.mail.ru/profile/o.novokreschenova/
+╨а╨╡╨┐╨╛╨╖╨╕╤В╨╛╤А╨╕╨╣ ╨┤╨╗╤П ╨║╤Г╤А╤Б╨░ "╨Ь╨░╤И╨╕╨╜╨╜╨╛╨╡ ╨╛╨▒╤Г╤З╨╡╨╜╨╕╨╡ ╨▓ ╨┐╤А╨╛╨┤╨░╨║╤И╨╡╨╜╨╡".
+╨б╤Б╤Л╨╗╨║╨░ ╨╜╨░ ╨┐╤А╨╛╤Д╨╕╨╗╤М ╨▓ MADE: https://data.mail.ru/profile/o.novokreschenova/
 
