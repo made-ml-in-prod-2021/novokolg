@@ -4,14 +4,14 @@ import sys
 
 import click
 
-from ml_project.code_source.data import read_data, split_train_val_data
-from ml_project.code_source.entities.train_pipeline_params import (
+from code_source.data import read_data, split_train_val_data
+from code_source.entities.train_pipeline_params import (
     TrainingPipelineParams,
     read_training_pipeline_params,
 )
-from ml_project.code_source.feat import make_features
-from ml_project.code_source.feat.build_features import column_transformer
-from ml_project.code_source.models import (
+from code_source.feat import make_features
+from code_source.feat.build_features import build_transformer, serialize_transformer
+from code_source.models import (
     train_model,
     serialize_model,
     predict_model,
@@ -21,6 +21,7 @@ from ml_project.code_source.models import (
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler(sys.stdout)
 logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 
 def train_pipeline(training_pipeline_params: TrainingPipelineParams):
@@ -34,8 +35,11 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
     logger.info(f"train_df.shape is {train_df.shape}")
     logger.info(f"val_df.shape is {val_df.shape}")
 
-    feature_transformer = column_transformer(training_pipeline_params.feature_params)
+    feature_transformer = build_transformer(training_pipeline_params.feature_params)
     feature_transformer.fit(train_df)
+    logger.info(f"train_df.shape after feature_transformer is {feature_transformer.transform(train_df).shape}")
+
+    path_to_transformer = serialize_transformer(feature_transformer, training_pipeline_params.transformer_path)
 
     train_features, train_target = make_features(
         feature_transformer,
@@ -71,11 +75,21 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
 
     path_to_model = serialize_model(model, training_pipeline_params.output_model_path)
 
-    return path_to_model, metrics
+    return path_to_model, path_to_transformer, metrics
+
+
+# if __name__ == "__main__":
+#    params = read_training_pipeline_params('configs/train_config.yaml')
+#    train_pipeline(params)
+#    params = read_training_pipeline_params('configs/train_config_LogReg.yaml')
+#    train_pipeline(params)
+
+@click.command(name="train_pipeline")
+@click.argument("config_path")
+def train_pipeline_command(config_path: str):
+    params = read_training_pipeline_params(config_path)
+    train_pipeline(params)
 
 
 if __name__ == "__main__":
-    params = read_training_pipeline_params('configs/train_config.yaml')
-    train_pipeline(params)
-    params = read_training_pipeline_params('configs/train_config_LogReg.yaml')
-    train_pipeline(params)
+    train_pipeline_command()

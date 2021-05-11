@@ -5,11 +5,14 @@ from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
+from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, accuracy_score
 
-from ml_project.code_source.entities.train_params import TrainingParams
+from code_source.entities.train_params import TrainingParams
+from code_source.entities.feat_params import FeatureParams
+from code_source.feat.build_features import make_features
 
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler(sys.stdout)
@@ -35,17 +38,14 @@ def train_model(
 
 
 def predict_model(
-    model: SklearnClassifier, features: pd.DataFrame
+        model: SklearnClassifier, data: pd.DataFrame
 ) -> np.ndarray:
-    predicts = model.predict(features)
+    predicts = model.predict(data)
     return predicts
 
 
 def evaluate_model(
-    predicts: np.ndarray, target: pd.Series, use_log_trick: bool = False
-) -> Dict[str, float]:
-    if use_log_trick:
-        target = np.exp(target)
+        predicts: np.ndarray, target: pd.Series) -> Dict[str, float]:
     return {
         "roc_auc_score": roc_auc_score(target, predicts),
         "accuracy_score": accuracy_score(target, predicts),
