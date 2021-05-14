@@ -4,13 +4,13 @@ import sys
 
 import click
 
-from code_source.data import read_data, split_train_val_data
-from code_source.entities.train_pipeline_params import (
+from data import read_data, split_train_val_data
+from entities.train_pipeline_params import (
     TrainingPipelineParams,
     read_training_pipeline_params,
 )
-from code_source.feat import make_features, extract_target, build_transformer, serialize_transformer
-from code_source.models import (
+from feat import make_features, extract_target, build_transformer, serialize_transformer
+from models import (
     train_model,
     serialize_model,
     predict_model,

@@ -1,18 +1,17 @@
 import pickle
 import logging
 import sys
+sys.path.append("..//")
 from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
-from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, accuracy_score
 
 from code_source.entities.train_params import TrainingParams
-from code_source.entities.feat_params import FeatureParams
-from code_source.feat.build_features import make_features
+
 
 logger = logging.getLogger(__name__)
 handler = logging.StreamHandler(sys.stdout)
