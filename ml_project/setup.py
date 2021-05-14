@@ -23,7 +23,8 @@ setup(
         "dataclasses>=0.6",
         "pyyaml==5.3",
         "marshmallow-dataclass==8.3.0",
-        "numpy==1.20.2"
+        "numpy==1.20.2",
+        "Faker==8.1.3"
     ],
     long_description=long_description,
     long_description_content_type='text/markdown'

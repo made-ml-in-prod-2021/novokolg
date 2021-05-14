@@ -9,8 +9,7 @@ from code_source.entities.train_pipeline_params import (
     TrainingPipelineParams,
     read_training_pipeline_params,
 )
-from code_source.feat import make_features
-from code_source.feat.build_features import build_transformer, serialize_transformer
+from code_source.feat import make_features, extract_target, build_transformer, serialize_transformer
 from code_source.models import (
     train_model,
     serialize_model,
@@ -41,11 +40,12 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
 
     path_to_transformer = serialize_transformer(feature_transformer, training_pipeline_params.transformer_path)
 
-    train_features, train_target = make_features(
+    train_features = make_features(
         feature_transformer,
         train_df,
         training_pipeline_params.feature_params,
     )
+    train_target = extract_target(train_df, training_pipeline_params.feature_params)
 
     logger.info(f"train_features.shape is {train_features.shape}")
 
@@ -53,11 +53,13 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
         train_features, train_target, training_pipeline_params.train_params
     )
 
-    val_features, val_target = make_features(
+    val_features = make_features(
         feature_transformer,
         val_df,
         training_pipeline_params.feature_params,
     )
+    val_target = extract_target(val_df, training_pipeline_params.feature_params)
+
 
     logger.info(f"val_features.shape is {val_features.shape}")
     predicts = predict_model(
@@ -77,12 +79,6 @@ def train_pipeline(training_pipeline_params: TrainingPipelineParams):
 
     return path_to_model, path_to_transformer, metrics
 
-
-# if __name__ == "__main__":
-#    params = read_training_pipeline_params('configs/train_config.yaml')
-#    train_pipeline(params)
-#    params = read_training_pipeline_params('configs/train_config_LogReg.yaml')
-#    train_pipeline(params)
 
 @click.command(name="train_pipeline")
 @click.argument("config_path")

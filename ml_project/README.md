@@ -31,7 +31,7 @@ python tests/data/create_fake_dataset.py 100
 #### Predict
 For prediction for new dataset, please provide dataset path and which model to use by setting model configuration path 
 
-python python predict_pipeline.py --data_path data/raw/heart.csv --config_path configs/train_config.yaml
+python predict_pipeline.py --data_path data/raw/heart.csv --config_path configs/train_config.yaml
 
 
 ####Project Organization

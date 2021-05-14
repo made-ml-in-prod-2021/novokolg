@@ -31,7 +31,7 @@ def train_model(
     elif train_params.model_type == "LogisticRegression":
         model = LogisticRegression()
     else:
-        logger.warning(f"Model type is is {train_params.model_type }")
+        logger.error(f"NotImplementedError: Model type is {train_params.model_type }")
         raise NotImplementedError()
     model.fit(features, target)
     return model

@@ -49,8 +49,7 @@ def serialize_transformer(transformer: ColumnTransformer, output: str) -> str:
 
 
 def make_features(transformer: ColumnTransformer, df: pd.DataFrame, params: FeatureParams,) -> pd.DataFrame:
-    logger.info(f"targets array {df[params.target_col]}")
-    return pd.DataFrame(transformer.transform(df)), df[params.target_col]
+    return pd.DataFrame(transformer.transform(df))
 
 
 def process_features(transformer: ColumnTransformer, df: pd.DataFrame) -> pd.DataFrame:

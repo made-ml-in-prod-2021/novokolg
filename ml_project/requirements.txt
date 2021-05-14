@@ -13,5 +13,6 @@ dataclasses==0.8
 pyyaml==5.3
 marshmallow-dataclass==8.3.0
 numpy==1.20.2
+Faker==8.1.3
 
 
