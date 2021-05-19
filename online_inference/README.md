@@ -13,4 +13,5 @@ docker run -p 80:80 novokolg/online_inference:v1
 python make_request.py
 
 ####Docker path:
+
 https://hub.docker.com/layers/novokolg/online_inference/v1/images/sha256:e9e1a9e22cb60327a0839563c686aa12cc78aa352509e9e0d5a3c5d0cc257b2e

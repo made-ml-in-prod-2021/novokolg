@@ -3,6 +3,7 @@ import pandas as pd
 from fastapi.testclient import TestClient
 from app import app
 
+
 os.environ['PATH_TO_MODEL'] = './model.pkl'
 os.environ['PATH_TO_TRANSFORMER'] = './transformer.pkl'
 

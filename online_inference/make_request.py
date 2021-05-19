@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import json
 
+
 if __name__ == "__main__":
     data = pd.read_csv("data.csv")
     data['target'] = 0
