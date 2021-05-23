@@ -89,11 +89,3 @@ def predict(request: Indicators):
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=os.getenv("PORT", 8000))
-
-client = TestClient(app)
-
-
-def test_read_main():
-    response = client.get("/predict")
-    assert response.status_code == 200
-    assert response.json() == {"msg": "Hello World"}
