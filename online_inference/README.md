@@ -11,6 +11,10 @@
 
 ##### Собрать докер: 
 docker build -t novokolg/online_inference:v1 . 
+
+##### Загрузить и запустить докер: 
+docker build -t novokolg/online_inference:v1 . 
+
 docker run -p 80:80 novokolg/online_inference:v1
 
 ##### Запуск скрипта: 
