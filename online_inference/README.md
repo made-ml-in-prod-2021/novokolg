@@ -3,6 +3,7 @@
 ##### Сначала задать пути в окружении:
 
  PATH_TO_MODEL=model.pkl (set PATH_TO_MODEL=model.pkl for Windows) 
+ 
  PATH_TO_TRANSFORMER=transformer.pkl (set PATH_TO_TRANSFORMER=transformer.pkl for Windows) 
  
  ##### Потом запустить: 
