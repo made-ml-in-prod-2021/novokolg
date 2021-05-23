@@ -13,7 +13,7 @@
 #### Загрузить и запустить докер: 
 docker pull novokolg/online_inference:v1
 
-docker run -p 80:80 novokolg/online_inference:v1
+docker run -p 8000:8000 novokolg/online_inference:v1
 
 #### Запуск скрипта: 
 python make_request.py

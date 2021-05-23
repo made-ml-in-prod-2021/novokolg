@@ -14,6 +14,16 @@ def test_read_main():
         assert response.status_code == 200
         assert response.json() == "it is entry point of our predictor"
 
+def test_read_main():
+    with TestClient(app) as client:
+        response = client.get("/healz")
+        assert response.status_code == 200
+        assert response.json() == True
+
+        response = client.get("/predict")
+        assert response.status_code == 422
+        assert response.json() == {'detail': [{'loc': ['body'], 'msg': 'field required', 'type': 'value_error.missing'}]}
+
 def test_predict():
     data = pd.read_csv(TEST_DATASET_PATH)
     data['target'] = 0
@@ -24,12 +34,3 @@ def test_predict():
         assert response.status_code == 200
         assert response.json() == [1]
 
-def test_read_main():
-    with TestClient(app) as client:
-        response = client.get("/healz")
-        assert response.status_code == 200
-        assert response.json() == True
-
-        response = client.get("/predict")
-        assert response.status_code == 200
-        assert response.json() == True

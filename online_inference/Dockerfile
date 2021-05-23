@@ -11,4 +11,5 @@ WORKDIR .
 ENV PATH_TO_MODEL="/model.pkl"
 ENV PATH_TO_TRANSFORMER="/transformer.pkl"
 
-CMD ["uvicorn", "app:app", "--host", "127.0.0.1", "--port", "8000"]
+#CMD ["uvicorn", "app:app", "--host", "127.0.0.1", "--port", "8000"]
+CMD ["python", "app.py"]
