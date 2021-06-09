@@ -1,0 +1,138 @@
+import airflow
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+from airflow.providers.docker.operators.docker import DockerOperator
+
+with DAG(
+    dag_id="01_gen_data",
+    start_date=airflow.utils.dates.days_ago(3),
+    schedule_interval="@daily",
+) as dag:
+
+    notify_start = BashOperator(
+        task_id="notify_start",
+        bash_command='echo "starting to generate data"',
+    )
+
+    gen_data = DockerOperator(
+        task_id = "gen_data",
+        image = "airflow-gen",
+        command = "--size 100 --path /data/raw/{{ ds }}",
+        network_mode = "bridge",
+        do_xcom_push = False,
+        volumes = ['C:/Users/novokolg/MADE/2 semestr/ML in prod/HW3/data/:/data']
+    )
+
+
+    notify_finish = BashOperator(
+        task_id="notify_finish",
+        bash_command='echo "Finish generating data"',
+    )
+
+    notify_start >> gen_data >> notify_finish
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from airflow import DAG
+from airflow.operators.dummy import DummyOperator
+from airflow.providers.docker.operators.docker import DockerOperator
+from airflow.utils.dates import days_ago
+
+from utils import default_args, VOLUME
+
+
+
+with DAG(
+        "01_gen_data",
+        default_args=default_args,
+        schedule_interval="@daily",
+        start_date=days_ago(5),
+) as dag:
+    start = DummyOperator(task_id="Begin")
+
+    download = DockerOperator(
+        task_id="Generate_data",
+        image="airflow-generate",
+        command="/data/raw/{{ ds }}",
+        network_mode="bridge",
+        do_xcom_push=False,
+        volumes=[VOLUME],
+    )
+
+    finish = DummyOperator(task_id="End")
+
+    start >> download >> finish
+
+
+
+import json
+import pathlib
+
+import airflow
+import requests
+import requests.exceptions as requests_exceptions
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
+
+
+def _get_pictures():
+
+    pathlib.Path("/opt/airflow/data/images").mkdir(parents=True, exist_ok=True)
+
+    # Download all pictures in launches.json
+    with open("/opt/airflow/data/launches.json") as f:
+        launches = json.load(f)
+        image_urls = [launch["image"] for launch in launches["results"]]
+        for image_url in image_urls:
+            try:
+                response = requests.get(image_url)
+                image_filename = image_url.split("/")[-1]
+                target_file = f"/opt/airflow/data/images/{image_filename}"
+                with open(target_file, "wb") as f:
+                    f.write(response.content)
+                print(f"Downloaded {image_url} to {target_file}")
+            except requests_exceptions.MissingSchema:
+                print(f"{image_url} appears to be an invalid URL.")
+            except requests_exceptions.ConnectionError:
+                print(f"Could not connect to {image_url}.")
+
+
+with DAG(
+    dag_id="02_python_operator_try_change_name",
+    start_date=airflow.utils.dates.days_ago(14),
+    schedule_interval=None,
+) as dag:
+
+    download_launches = BashOperator(
+        task_id="download_launches",
+        bash_command="curl -o /opt/airflow/data/launches.json -L 'https://ll.thespacedevs.com/2.0.0/launch/upcoming'",
+        dag=dag,
+    )
+
+    get_pictures = PythonOperator(
+        task_id="get_pictures", python_callable=_get_pictures,
+    )
+
+    notify = BashOperator(
+        task_id="notify",
+        bash_command='echo "There are now $(ls /opt/airflow/data/images/ | wc -l) images."',
+    )
+
+    download_launches >> get_pictures >> notify
