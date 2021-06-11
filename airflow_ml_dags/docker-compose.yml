@@ -95,7 +95,7 @@ services:
       - ml_base
     restart: "no"
 
-  train_model
+  train_model:
     build:
       context: images/airflow-train-model
     image: airflow-train-model
@@ -103,7 +103,7 @@ services:
       - ml_base
     restart: "no"
 
-  validation
+  validation:
     build:
       context: images/airflow-validation
     image: airflow-validation
