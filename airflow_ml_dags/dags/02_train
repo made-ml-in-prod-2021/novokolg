@@ -1,0 +1,63 @@
+from airflow import DAG
+from airflow.operators.dummy import DummyOperator
+from airflow.providers.docker.operators.docker import DockerOperator
+from airflow.utils.dates import days_ago
+from airflow.sensors.filesystem import FileSensor
+
+default_args = {
+    "owner": "Olga Novokreschenova",
+    "email": ["ignateva.olga@gmail.com"],
+    "retries": 1,
+    "retry_delay": timedelta(minutes=5),
+}
+
+VOLUMES = ['C:/Users/novokolg/MADE/']
+
+with DAG(
+        "02_train",
+        default_args=default_args,
+        schedule_interval="@weekly",
+        start_date=days_ago(5),
+) as dag:
+
+    start = DummyOperator(task_id = "start")
+
+    preprocess = DockerOperator(
+        task_id = "preprocess",
+        image = "airflow-preprocess",
+        command = "/data/raw/{{ ds }} /data/processed/{{ ds }}",
+        network_mode = "bridge",
+        do_xcom_push = False,
+        volumes = VOLUME
+    )
+
+    split = DockerOperator(
+        task_id = "split",
+        image = "airflow-split",
+        command = "/data/processed/{{ ds }} /data/models/{{ ds }}",
+        network_mode = "bridge",
+        do_xcom_push = False,
+        volumes = VOLUMES
+    )
+
+    train = DockerOperator(
+        task_id = "train_model",
+        image = "airflow-train",
+        command = "/data/model/{{ ds }}",
+        network_mode = "bridge",
+        do_xcom_push = False,
+        volumes = VOLUMES
+    )
+
+    validate = DockerOperator(
+        task_id = "validation",
+        image = "airflow-validation",
+        command = "/data/model/{{ ds }}",
+        network_mode = "bridge",
+        do_xcom_push = False,
+        volumes = VOLUMES
+    )
+
+    finish = DummyOperator(task_id = "finish")
+
+    start >> preprocess >> split >> train_model >> validation >> finish
